@@ -1,0 +1,26 @@
+Informe Actividad 4
+
+Ejecución y verificación de pruebas: Al ejecutar el comando pytest desde la terminal sobre la carpeta Actividad_4, se recopilaron e interpretaron los tres casos de prueba configurados en test_analizador.py. El resultado de la ejecución confirmó el correcto funcionamiento de la lógica implementada. Así, se obtuvo de forma exitosa el resultado de 3 passed sin errores ni incidencias:
+•	test_frecuencias_basico: Verificó que el conteo básico de palabras funcionara correctamente con el texto "sol luna sol".
+•	test_frecuencias_vacio: Comprobó que al enviar un texto vacío "" el resultado devuelto fuera un diccionario vacío {}.
+•	test_frecuencias_mayusculas: Evaluó la prueba donde se resolvió el TODO (con el texto "Sol sol SOL"), confirmando que gracias al método .lower() todas las variantes en mayúsculas y minúsculas se agrupan y se cuentan correctamente bajo la clave "sol" con una frecuencia de 3.
+
+Análisis de sensibilidad a mayúsculas (Caso sin .lower())
+Al retirar de forma temporal el método .lower() de la función contar_frecuencias en el archivo analizador.py y ejecutar las pruebas con pytest, se observó que la prueba test_frecuencias_mayusculas arrojó un fallo de aserción (AssertionError: assert 1 == 3). El código pasó a ser sensible a las mayúsculas (case-sensitive), y trató de manera independiente las variantes "Sol", "sol" y "SOL" como claves separadas en el diccionario de conteo, lo que valida empíricamente la necesidad del método .lower() para unificar el texto de entrada antes de realizar el procesamiento de frecuencias.
+
+Diferencias en los motivos por los que la función contar_frecuencias recibe un string directamente en vez de una ruta de archivo
+En la Clase 2, las funciones recibieron como parámetro la ruta de un archivo (texto.txt), de modo que el programa tuvo que abrir el archivo, leer su contenido y luego procesarlo. Para la actividad 4, la función contar_frecuencias está diseñada de manera más modular. No fue necesario abrir archivos, porque el texto ya venía disponible como un string. La ventaja de eso es una mayor rapidez y comodidad, ya que podemos escribir oraciones de prueba directamente (por ejemplo, "sol luna sol" o textos vacíos), sin depender de archivos externos.
+Sin embargo, por una cuestión de sentido común, sospecho que escribir el texto directamente entre comillas dentro del código sería adecuado para fragmentos breves o pruebas puntuales, ya que me parece que puede ser impráctico (o incluso inviable) pegar un documento extenso o un libro entero dentro de una línea de código.  
+Otros casos borde
+En el caso de un analizador de frecuencias, los casos de borde podrían surgir de las pequeñas imperfecciones con las que escribimos las personas, por ejemplo:
+•	Espacios de más: oraciones que contienen múltiples espacios seguidos o saltos extra.
+•	Signos de puntuación: palabras que vienen acompañadas de puntos, comas o signos de exclamación.
+Caso borde “espacios extra”
+Se añadió un nuevo caso de prueba (test_frecuencias_espacios_extras) en el archivo test_analizador.py que evalúa un texto con múltiples espacios y saltos en los extremos (" sol luna sol ").
+Al ejecutar pytest, el resultado fue exitoso (4 passed). Eso demuestra que el método nativo .split() de Python procesa de manera automática los espacios en blanco sobrantes, recortando los extremos y unificando las separaciones entre palabras sin alterar el diccionario final de frecuencias.
+La superación exitosa de la prueba con espacios extras permite observar que ciertas irregularidades en la escritura (tabulaciones, márgenes o espacios extra) pueden ser “absorbidas” por el código. Gracias al comportamiento del método .split(), estos detalles de formato no representan un obstáculo operativo para el conteo de frecuencias.
+Prueba de conteo con signos de puntuación
+Para evaluar el desempeño de la función ante textos que contienen marcas de puntuación, se incorporó la prueba test_frecuencias_con_puntuacion_sin_limpieza. Al ejecutar la prueba, el resultado confirmó que el programa procesa los símbolos ortográficos como parte integrante de la cadena de texto. En consecuencia, el sistema contabiliza las palabras de forma literal con los signos adheridos (por ejemplo, diferenciando "sol." de "sol"), lo que evidencia la necesidad de incorporar una rutina explícita de preprocesamiento y limpieza de caracteres especiales para lograr un análisis léxico preciso.
+La limitación detectada en la prueba anterior sugiere que, si bien las funciones nativas básicas de separación .split(), resuelven los problemas espaciales, se requeriría actualizar el código fuente en el archivo analizador.py para incorporar una rutina de limpieza de caracteres especiales a fin de eliminar de manera los signos de puntuación del texto antes de la tokenización.
+En otras palabras, el análisis de sensibilidad y la revisión de los casos de borde evidenciaron que, si bien el código tolera variaciones en los espacios gracias a los métodos nativos, requiere ajustes adicionales para gestionar de manera precisa las marcas de puntuación. 
+
